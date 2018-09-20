@@ -61,8 +61,13 @@ public class Neighbours extends Application {
         double[] dist = {0.25, 0.25, 0.50};
         // Number of locations (places) in world (square)
         int nLocations = 900;
+        int sideLength = (int) Math.sqrt(nLocations);
+
 
         // TODO
+        world = new Actor[sideLength][sideLength];
+        populateWorld(world, dist, nLocations);
+        shuffle(world);
 
         // Should be last
         fixScreenSize(nLocations);
@@ -72,10 +77,18 @@ public class Neighbours extends Application {
     // ------- Methods ------------------
 
     // TODO write the methods here, implement/test bottom up
-    // Här ska vi skriva metoder.
 
 
+    <T> void shuffle(T[] array){
+        Random rand = new Random();
+        for(int i = array.length - 1; i > 1; i--){
+            int j = rand.nextInt(i);
+            T tmp = array[i];
+            array[i] = array[j];
+            array[j] = tmp;
 
+        }
+    }
 
 
 
