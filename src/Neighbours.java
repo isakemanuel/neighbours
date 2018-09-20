@@ -72,7 +72,7 @@ public class Neighbours extends Application {
     // ------- Methods ------------------
 
     // TODO write the methods here, implement/test bottom up
-
+    // Här ska vi skriva metoder.
 
 
 
