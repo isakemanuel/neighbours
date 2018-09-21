@@ -104,6 +104,42 @@ public class Neighbours extends Application {
 
         }
     }
+    void getNextWorld (State[][] states, Actor[][] current) {
+        int[] unindices = getIndices();
+    }
+    int[] getIndices(State[][] matris, State state) {
+
+        State[] states = matrixToArray(matris);
+        int size = 0;
+
+
+        for(int i = 0; i < states.length; i++) {
+
+            if(states[i] == state) {
+
+                size++;
+
+            }
+        }
+
+        int[] indices = new int[size];
+        int counter = 0;
+
+        for(int i = 0; i < states.length; i++) {
+
+            if(states[i] == state) {
+
+                indices[counter] = i;
+                counter++;
+
+            }
+        }
+
+        return indices;
+    }
+
+
+    }
 
     <T> T[] matrixToArray(T[][] matrix) {
         Class<?> clazz = matrix[0][0].getClass();
