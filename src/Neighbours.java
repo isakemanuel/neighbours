@@ -91,6 +91,35 @@ public class Neighbours extends Application {
     }
 
 
+    // These two array to matrix and back converters builds on the principle on page 39 in the following document
+    // http://www.cse.chalmers.se/edu/course/tda548/lectures/v2.pdf
+    <T> T[] matrixToArray(T[][] matrix) {
+        T[] array = new T[matrix.length * matrix[0].length];
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[row].length; col++) {
+                array[row * matrix[row].length + col] = matrix[row][col];
+            }
+
+        }
+        return array;
+    }
+
+    <T> T[][] arrayToMatrix(T[] array) {
+        int row, col, nColumns;
+        // We're assuming that this array is going to be converted to a square matrix
+        nColumns = (int) Math.sqrt(array.length);
+        T[][] matrix = new T[nColumns][nColumns];
+        for (int i = 0; i < matrix.length; i++) {
+            col = i % nColumns;
+            row = (i - col) / nColumns;
+            matrix[row][col] = array[i];
+        }
+        return matrix;
+    }
+
+
+
+
 
 
 
