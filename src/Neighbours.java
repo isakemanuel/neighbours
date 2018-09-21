@@ -49,8 +49,8 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         final double threshold = 0.7;
-        //State[][] states = getStates(world, threshold);
-        //getNextWorld(world, states);
+        State[][] states = getStates(world, threshold);
+        getNextWorld(states, world);
         // TODO
     }
 
@@ -59,7 +59,7 @@ public class Neighbours extends Application {
     // Don't care about "@Override" and "public" (just accept for now)
     @Override
     public void init() {
-        //test();    // <---------------- Uncomment to TEST!
+        test();    // <---------------- Uncomment to TEST!
 
         // %-distribution of RED, BLUE and NONE
         double[] dist = {0.25, 0.25, 0.50};
@@ -82,15 +82,18 @@ public class Neighbours extends Application {
 
     // TODO write the methods here, implement/test bottom up
 
+
+
     void populateWorld(Actor[][] realm, double[] distribution) {
         int nCells = realm.length * realm.length;
         int[] counts = new int[distribution.length];
         Actor[] types = Actor.values();
         for (int i = 0; i < distribution.length; i++) {
-            counts[i] = (int) distribution[i] * nCells;
+            counts[i] = (int) (distribution[i] * nCells);
         }
         for (int row = 0; row < realm.length; row++) {
             for (int col = 0; col < realm.length; col++) {
+                realm[row][col] = Actor.NONE;
                 for (int type = 0; type < types.length; type++) {
                     if (counts[type] > 0) {
                         realm[row][col] = types[type];
@@ -122,7 +125,7 @@ public class Neighbours extends Application {
     }
 
     void getNextWorld(State[][] states, Actor[][] current) {
-        int[] unindices = getIndices();
+        //int[] unindices = getIndices();
     }
 
     int[] getIndices(State[][] matris, State state) {
@@ -197,9 +200,11 @@ public class Neighbours extends Application {
                 {Actor.RED, Actor.NONE, Actor.BLUE}
         };
 
-        Actor[] actarr = matrixToArray(testWorld);
+        Actor[][] testWorld2 = new Actor[3][3];
 
-        Actor[][] actarrmatris = arrayToMatrix(actarr);
+        populateWorld(testWorld2, new double[]{0.25, 0.25, 0.5});
+
+
 
         double th = 0.5;   // Simple threshold used for testing
         int size = testWorld.length;
