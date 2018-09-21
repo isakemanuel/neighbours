@@ -49,8 +49,8 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         final double threshold = 0.7;
-        //State[][] states = getStates(world, threshold);
-        //getNextWorld(world, states);
+        State[][] states = getStates(world, threshold);
+        getNextWorld(states, world);
         // TODO
     }
 
@@ -82,15 +82,18 @@ public class Neighbours extends Application {
 
     // TODO write the methods here, implement/test bottom up
 
+
+
     void populateWorld(Actor[][] realm, double[] distribution) {
         int nCells = realm.length * realm.length;
         int[] counts = new int[distribution.length];
         Actor[] types = Actor.values();
         for (int i = 0; i < distribution.length; i++) {
-            counts[i] = (int) distribution[i] * nCells;
+            counts[i] = (int) (distribution[i] * nCells);
         }
         for (int row = 0; row < realm.length; row++) {
             for (int col = 0; col < realm.length; col++) {
+                realm[row][col] = Actor.NONE;
                 for (int type = 0; type < types.length; type++) {
                     if (counts[type] > 0) {
                         realm[row][col] = types[type];
