@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -38,6 +39,8 @@ public class Neighbours extends Application {
         NA     // Not applicable (NA), used for NONEs
     }
 
+
+
     // Below is the *only* accepted instance variable (i.e. variables outside any method)
     // This variable may *only* be used in methods init() and updateWorld()
     Actor[][] world;              // The world is a square matrix of Actors
@@ -47,6 +50,8 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         final double threshold = 0.7;
+        //State[][] states = getStates(world, threshold);
+        //getNextWorld(world, states);
        // TODO
     }
 
@@ -55,7 +60,7 @@ public class Neighbours extends Application {
     // Don't care about "@Override" and "public" (just accept for now)
     @Override
     public void init() {
-        //test();    // <---------------- Uncomment to TEST!
+        test();    // <---------------- Uncomment to TEST!
 
         // %-distribution of RED, BLUE and NONE
         double[] dist = {0.25, 0.25, 0.50};
@@ -66,7 +71,7 @@ public class Neighbours extends Application {
 
         // TODO
         world = new Actor[sideLength][sideLength];
-        populateWorld(world, dist, nLocations);
+        populateWorld(world, dist);
         shuffle(world);
 
         // Should be last
@@ -78,6 +83,16 @@ public class Neighbours extends Application {
 
     // TODO write the methods here, implement/test bottom up
 
+    void populateWorld(Actor[][] realm, double[] distribution){
+
+
+    }
+
+    <T> void shuffle(T[][] matrix){
+        T[] matrixAsArray = matrixToArray(matrix);
+        shuffle(matrixAsArray);
+        matrix = arrayToMatrix(matrixAsArray);
+    }
 
     <T> void shuffle(T[] array){
         Random rand = new Random();
@@ -90,6 +105,32 @@ public class Neighbours extends Application {
         }
     }
 
+    <T> T[] matrixToArray(T[][] matrix) {
+        Class<?> clazz = matrix[0][0].getClass();
+        T[] array = (T[]) Array.newInstance(clazz, matrix.length * matrix[0].length);
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[row].length; col++) {
+                array[row * matrix[row].length + col] = matrix[row][col];
+            }
+
+        }
+        return array;
+    }
+
+    <T> T[][] arrayToMatrix(T[] array) {
+        int row, col, nColumns;
+        Class<?> clazz = array[0].getClass();
+        // We're assuming that this array is going to be converted to a square matrix
+        nColumns = (int) Math.sqrt(array.length);
+        T[][] matrix = (T[][]) Array.newInstance(clazz, nColumns, nColumns);
+        for (int i = 0; i < array.length; i++) {
+            col = i % nColumns;
+            row = (i - col) / nColumns;
+            matrix[row][col] = array[i];
+        }
+        return matrix;
+    }
+
 
 
 
@@ -99,12 +140,18 @@ public class Neighbours extends Application {
     // Here you run your tests i.e. call your logic methods
     // to see that they really work
     void test() {
+
         // A small hard coded world for testing
         Actor[][] testWorld = new Actor[][]{
                 {Actor.RED, Actor.RED, Actor.NONE},
                 {Actor.NONE, Actor.BLUE, Actor.NONE},
                 {Actor.RED, Actor.NONE, Actor.BLUE}
         };
+
+        Actor[] actarr = matrixToArray(testWorld);
+
+        Actor[][] actarrmatris = arrayToMatrix(actarr);
+
         double th = 0.5;   // Simple threshold used for testing
         int size = testWorld.length;
 
