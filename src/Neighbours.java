@@ -40,7 +40,6 @@ public class Neighbours extends Application {
     }
 
 
-
     // Below is the *only* accepted instance variable (i.e. variables outside any method)
     // This variable may *only* be used in methods init() and updateWorld()
     Actor[][] world;              // The world is a square matrix of Actors
@@ -52,7 +51,7 @@ public class Neighbours extends Application {
         final double threshold = 0.7;
         //State[][] states = getStates(world, threshold);
         //getNextWorld(world, states);
-       // TODO
+        // TODO
     }
 
     // This method initializes the world variable with a random distribution of Actors
@@ -60,7 +59,7 @@ public class Neighbours extends Application {
     // Don't care about "@Override" and "public" (just accept for now)
     @Override
     public void init() {
-        test();    // <---------------- Uncomment to TEST!
+        //test();    // <---------------- Uncomment to TEST!
 
         // %-distribution of RED, BLUE and NONE
         double[] dist = {0.25, 0.25, 0.50};
@@ -83,20 +82,37 @@ public class Neighbours extends Application {
 
     // TODO write the methods here, implement/test bottom up
 
-    void populateWorld(Actor[][] realm, double[] distribution){
+    void populateWorld(Actor[][] realm, double[] distribution) {
+        int nCells = realm.length * realm.length;
+        int[] counts = new int[distribution.length];
+        Actor[] types = Actor.values();
+        for (int i = 0; i < distribution.length; i++) {
+            counts[i] = (int) distribution[i] * nCells;
+        }
+        for (int row = 0; row < realm.length; row++) {
+            for (int col = 0; col < realm.length; col++) {
+                for (int type = 0; type < types.length; type++) {
+                    if (counts[type] > 0) {
+                        realm[row][col] = types[type];
+                        counts[type]--;
+                        break;
+                    }
+                }
+            }
 
-
+        }
     }
 
-    <T> void shuffle(T[][] matrix){
+
+    <T> void shuffle(T[][] matrix) {
         T[] matrixAsArray = matrixToArray(matrix);
         shuffle(matrixAsArray);
         matrix = arrayToMatrix(matrixAsArray);
     }
 
-    <T> void shuffle(T[] array){
+    <T> void shuffle(T[] array) {
         Random rand = new Random();
-        for(int i = array.length - 1; i > 1; i--){
+        for (int i = array.length - 1; i > 1; i--) {
             int j = rand.nextInt(i);
             T tmp = array[i];
             array[i] = array[j];
@@ -104,18 +120,20 @@ public class Neighbours extends Application {
 
         }
     }
-    void getNextWorld (State[][] states, Actor[][] current) {
+
+    void getNextWorld(State[][] states, Actor[][] current) {
         int[] unindices = getIndices();
     }
+
     int[] getIndices(State[][] matris, State state) {
 
         State[] states = matrixToArray(matris);
         int size = 0;
 
 
-        for(int i = 0; i < states.length; i++) {
+        for (int i = 0; i < states.length; i++) {
 
-            if(states[i] == state) {
+            if (states[i] == state) {
 
                 size++;
 
@@ -125,9 +143,9 @@ public class Neighbours extends Application {
         int[] indices = new int[size];
         int counter = 0;
 
-        for(int i = 0; i < states.length; i++) {
+        for (int i = 0; i < states.length; i++) {
 
-            if(states[i] == state) {
+            if (states[i] == state) {
 
                 indices[counter] = i;
                 counter++;
@@ -138,8 +156,6 @@ public class Neighbours extends Application {
         return indices;
     }
 
-
-    }
 
     <T> T[] matrixToArray(T[][] matrix) {
         Class<?> clazz = matrix[0][0].getClass();
@@ -166,9 +182,6 @@ public class Neighbours extends Application {
         }
         return matrix;
     }
-
-
-
 
 
     // ------- Testing -------------------------------------
