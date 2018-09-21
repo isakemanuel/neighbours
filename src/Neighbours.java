@@ -122,10 +122,33 @@ public class Neighbours extends Application {
     }
 
     void getNextWorld(State[][] states, Actor[][] current) {
-        int[] unindices = getIndices();
+
+        Integer[] unsatisfiedIndices = getIndices(states, State.UNSATISFIED);
+        Integer[] emptyIndices = getIndices(states, State.NA);
+
+        int size = current.length;
+
+        shuffle(unsatisfiedIndices);
+        shuffle(emptyIndices);
+
+        int range = Math.max(unsatisfiedIndices.length, emptyIndices.length);
+
+        for(int i = 0; i < range; i++){
+
+            int emptyIndex = emptyIndices[i];
+
+            int unsatisfiedIndex = unsatisfiedIndices[i];
+
+            current[emptyIndex / size][emptyIndex % size] = current[unsatisfiedIndex / size][unsatisfiedIndex % size];
+
+            current[unsatisfiedIndex / size][unsatisfiedIndex % size] = Actor.NONE;
+
+        }
+
+
     }
 
-    int[] getIndices(State[][] matris, State state) {
+    Integer[] getIndices(State[][] matris, State state) {
 
         State[] states = matrixToArray(matris);
         int size = 0;
@@ -140,7 +163,7 @@ public class Neighbours extends Application {
             }
         }
 
-        int[] indices = new int[size];
+        Integer[] indices = new Integer[size];
         int counter = 0;
 
         for (int i = 0; i < states.length; i++) {
