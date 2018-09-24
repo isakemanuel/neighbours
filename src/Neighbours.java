@@ -117,7 +117,7 @@ public class Neighbours extends Application {
         return matrix;
     }*/
 
-    <T> void shuffle(T[][] matrix){
+    /*<T> void shuffle(T[][] matrix){
         Random rand = new Random();
 
         for (int i = matrix.length - 1; i > 1; i--) {
@@ -131,6 +131,29 @@ public class Neighbours extends Application {
                 matrix[k][l] = tmp;
 
             }
+
+        }
+    }*/
+
+    <T> void shuffle(T[][] matrix) {
+        Random rand = new Random();
+        int sideLength = matrix.length;
+        int elements = sideLength * sideLength;
+
+        int iCol, iRow, jCol, jRow, j;
+        T tmp;
+
+        for (int i = elements - 1; i > 1; i--) {
+            j = rand.nextInt(i);
+
+            iCol = i % sideLength;
+            iRow = i / sideLength;
+            jCol = j % sideLength;
+            jRow = j / sideLength;
+
+            tmp = matrix[iRow][iCol];
+            matrix[iRow][iCol] = matrix[jRow][jCol];
+            matrix[jRow][jCol] = tmp;
 
         }
     }
