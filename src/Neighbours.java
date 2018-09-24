@@ -127,7 +127,6 @@ public class Neighbours extends Application {
         }
     }
 
-    // Fisher-Yates shuffle
     <T> void shuffle(T[][] matrix) {
         Random rand = new Random();
         int sideLength = matrix.length;
