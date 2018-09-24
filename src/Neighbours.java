@@ -67,7 +67,12 @@ public class Neighbours extends Application {
     }
 
     private State getState(Actor[][] world, int row, int col, double threshold) {
-        return State.UNSATISFIED;
+        if (world[row][col] == Actor.NONE) {
+            return State.NA;
+        } else {
+            return State.UNSATISFIED;
+        }
+
     }
 
     // This method initializes the world variable with a random distribution of Actors
