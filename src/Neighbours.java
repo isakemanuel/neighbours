@@ -7,6 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -38,6 +39,7 @@ public class Neighbours extends Application {
         NA     // Not applicable (NA), used for NONEs
     }
 
+
     // Below is the *only* accepted instance variable (i.e. variables outside any method)
     // This variable may *only* be used in methods init() and updateWorld()
     Actor[][] world;              // The world is a square matrix of Actors
@@ -47,7 +49,9 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         final double threshold = 0.7;
-       // TODO
+        State[][] states = getStates(world, threshold);
+        getNextWorld(states, world);
+        // TODO
     }
 
     // This method initializes the world variable with a random distribution of Actors
@@ -66,7 +70,7 @@ public class Neighbours extends Application {
 
         // TODO
         world = new Actor[sideLength][sideLength];
-        populateWorld(world, dist, nLocations);
+        populateWorld(world, dist);
         shuffle(world);
 
         // Should be last
@@ -79,9 +83,39 @@ public class Neighbours extends Application {
     // TODO write the methods here, implement/test bottom up
 
 
-    <T> void shuffle(T[] array){
+
+    void populateWorld(Actor[][] realm, double[] distribution) {
+        int nCells = realm.length * realm.length;
+        int[] counts = new int[distribution.length];
+        Actor[] types = Actor.values();
+        for (int i = 0; i < distribution.length; i++) {
+            counts[i] = (int) (distribution[i] * nCells);
+        }
+        for (int row = 0; row < realm.length; row++) {
+            for (int col = 0; col < realm.length; col++) {
+                realm[row][col] = Actor.NONE;
+                for (int type = 0; type < types.length; type++) {
+                    if (counts[type] > 0) {
+                        realm[row][col] = types[type];
+                        counts[type]--;
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    <T> void shuffle(T[][] matrix) {
+        T[] matrixAsArray = matrixToArray(matrix);
+        shuffle(matrixAsArray);
+        matrix = arrayToMatrix(matrixAsArray);
+    }
+
+    <T> void shuffle(T[] array) {
         Random rand = new Random();
-        for(int i = array.length - 1; i > 1; i--){
+        for (int i = array.length - 1; i > 1; i--) {
             int j = rand.nextInt(i);
             T tmp = array[i];
             array[i] = array[j];
@@ -90,11 +124,68 @@ public class Neighbours extends Application {
         }
     }
 
+    void getNextWorld(State[][] states, Actor[][] current) {
 
-    // These two array to matrix and back converters builds on the principle on page 39 in the following document
-    // http://www.cse.chalmers.se/edu/course/tda548/lectures/v2.pdf
+        Integer[] unsatisfiedIndices = getIndices(states, State.UNSATISFIED);
+        Integer[] emptyIndices = getIndices(states, State.NA);
+
+        int size = current.length;
+
+        shuffle(unsatisfiedIndices);
+        shuffle(emptyIndices);
+
+        int range = Math.max(unsatisfiedIndices.length, emptyIndices.length);
+
+        for(int i = 0; i < range; i++){
+
+            int emptyIndex = emptyIndices[i];
+
+            int unsatisfiedIndex = unsatisfiedIndices[i];
+
+            current[emptyIndex / size][emptyIndex % size] = current[unsatisfiedIndex / size][unsatisfiedIndex % size];
+
+            current[unsatisfiedIndex / size][unsatisfiedIndex % size] = Actor.NONE;
+
+        }
+
+
+    }
+
+    Integer[] getIndices(State[][] matris, State state) {
+
+        State[] states = matrixToArray(matris);
+        int size = 0;
+
+
+        for (int i = 0; i < states.length; i++) {
+
+            if (states[i] == state) {
+
+                size++;
+
+            }
+        }
+
+        Integer[] indices = new Integer[size];
+        int counter = 0;
+
+        for (int i = 0; i < states.length; i++) {
+
+            if (states[i] == state) {
+
+                indices[counter] = i;
+                counter++;
+
+            }
+        }
+
+        return indices;
+    }
+
+
     <T> T[] matrixToArray(T[][] matrix) {
-        T[] array = new T[matrix.length * matrix[0].length];
+        Class<?> clazz = matrix[0][0].getClass();
+        T[] array = (T[]) Array.newInstance(clazz, matrix.length * matrix[0].length);
         for (int row = 0; row < matrix.length; row++) {
             for (int col = 0; col < matrix[row].length; col++) {
                 array[row * matrix[row].length + col] = matrix[row][col];
@@ -106,10 +197,11 @@ public class Neighbours extends Application {
 
     <T> T[][] arrayToMatrix(T[] array) {
         int row, col, nColumns;
+        Class<?> clazz = array[0].getClass();
         // We're assuming that this array is going to be converted to a square matrix
         nColumns = (int) Math.sqrt(array.length);
-        T[][] matrix = new T[nColumns][nColumns];
-        for (int i = 0; i < matrix.length; i++) {
+        T[][] matrix = (T[][]) Array.newInstance(clazz, nColumns, nColumns);
+        for (int i = 0; i < array.length; i++) {
             col = i % nColumns;
             row = (i - col) / nColumns;
             matrix[row][col] = array[i];
@@ -118,22 +210,23 @@ public class Neighbours extends Application {
     }
 
 
-
-
-
-
-
     // ------- Testing -------------------------------------
 
     // Here you run your tests i.e. call your logic methods
     // to see that they really work
     void test() {
+
         // A small hard coded world for testing
         Actor[][] testWorld = new Actor[][]{
                 {Actor.RED, Actor.RED, Actor.NONE},
                 {Actor.NONE, Actor.BLUE, Actor.NONE},
                 {Actor.RED, Actor.NONE, Actor.BLUE}
         };
+
+        Actor[] actarr = matrixToArray(testWorld);
+
+        Actor[][] actarrmatris = arrayToMatrix(actarr);
+
         double th = 0.5;   // Simple threshold used for testing
         int size = testWorld.length;
 
