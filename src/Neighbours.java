@@ -106,35 +106,6 @@ public class Neighbours extends Application {
         }
     }
 
-
-
-    /*<T> T[][] shuffle(T[][] matrix) {
-        T[] array = matrixToArray(matrix);
-
-        shuffle(array);
-        matrix = arrayToMatrix(array);
-
-        return matrix;
-    }*/
-
-    /*<T> void shuffle(T[][] matrix){
-        Random rand = new Random();
-
-        for (int i = matrix.length - 1; i > 1; i--) {
-            for(int j = matrix[i].length - 1; j > 0; j--){
-                int k = rand.nextInt(i);
-                int l = rand.nextInt(j);
-
-
-                T tmp = matrix[i][j];
-                matrix[i][j] = matrix[k][l];
-                matrix[k][l] = tmp;
-
-            }
-
-        }
-    }*/
-
     <T> void shuffle(T[][] matrix) {
         Random rand = new Random();
         int sideLength = matrix.length;
