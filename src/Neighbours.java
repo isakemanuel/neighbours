@@ -49,9 +49,25 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         final double threshold = 0.7;
-        //State[][] states = getStates(world, threshold);
-        //getNextWorld(states, world);
+        State[][] states = getStates(world, threshold);
+        getNextWorld(states, world);
         // TODO
+    }
+
+    State[][] getStates(Actor[][] world, double threshold){
+        State[][] states = new State[world.length][world.length];
+
+        for(int row = 0; row < world.length; row++){
+            for(int col = 0; col < world.length; col++){
+                states[row][col] = getState(world, row, col, threshold);
+            }
+        }
+
+        return states;
+    }
+
+    private State getState(Actor[][] world, int row, int col, double threshold) {
+        return State.UNSATISFIED;
     }
 
     // This method initializes the world variable with a random distribution of Actors
@@ -150,7 +166,7 @@ public class Neighbours extends Application {
         shuffle(unsatisfiedIndices);
         shuffle(emptyIndices);
 
-        int range = Math.max(unsatisfiedIndices.length, emptyIndices.length);
+        int range = Math.min(unsatisfiedIndices.length, emptyIndices.length);
 
         for(int i = 0; i < range; i++){
 
