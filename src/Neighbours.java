@@ -139,15 +139,19 @@ public class Neighbours extends Application {
         Random rand = new Random();
         int sideLength = matrix.length;
         int elements = sideLength * sideLength;
+
+        int iCol, iRow, jCol, jRow, j;
+        T tmp;
+
         for (int i = elements - 1; i > 1; i--) {
-            int j = rand.nextInt(i);
+            j = rand.nextInt(i);
 
-            int iCol = i % sideLength;
-            int iRow = i / sideLength;
-            int jCol = j % sideLength;
-            int jRow = j / sideLength;
+            iCol = i % sideLength;
+            iRow = i / sideLength;
+            jCol = j % sideLength;
+            jRow = j / sideLength;
 
-            T tmp = matrix[iRow][iCol];
+            tmp = matrix[iRow][iCol];
             matrix[iRow][iCol] = matrix[jRow][jCol];
             matrix[jRow][jCol] = tmp;
 
