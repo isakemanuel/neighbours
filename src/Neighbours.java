@@ -149,10 +149,8 @@ public class Neighbours extends Application {
             double places = arr[1];
 
             if (neighbours / places >= threshold) {
-                System.out.println("Nöjd: " + row + ", " + col);
                 return State.SATISFIED;
             } else {
-                System.out.println("Missnöjd: " + row + ", " + col);
                 return State.UNSATISFIED;
             }
 
