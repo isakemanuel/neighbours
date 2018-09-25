@@ -54,27 +54,6 @@ public class Neighbours extends Application {
         // TODO
     }
 
-    State[][] getStates(Actor[][] world, double threshold){
-        State[][] states = new State[world.length][world.length];
-
-        for(int row = 0; row < world.length; row++){
-            for(int col = 0; col < world.length; col++){
-                states[row][col] = getState(world, row, col, threshold);
-            }
-        }
-
-        return states;
-    }
-
-    private State getState(Actor[][] world, int row, int col, double threshold) {
-        if (world[row][col] == Actor.NONE) {
-            return State.NA;
-        } else {
-            return State.UNSATISFIED;
-        }
-
-    }
-
     // This method initializes the world variable with a random distribution of Actors
     // Method automatically called by JavaFX runtime (before graphics appear)
     // Don't care about "@Override" and "public" (just accept for now)
@@ -102,8 +81,6 @@ public class Neighbours extends Application {
     // ------- Methods ------------------
 
     // TODO write the methods here, implement/test bottom up
-
-
 
     void populateWorld(Actor[][] realm, double[] distribution) {
         int nCells = realm.length * realm.length;
@@ -148,6 +125,71 @@ public class Neighbours extends Application {
             matrix[jRow][jCol] = tmp;
 
         }
+    }
+
+    State[][] getStates(Actor[][] world, double threshold){
+        State[][] states = new State[world.length][world.length];
+
+        for(int row = 0; row < world.length; row++){
+            for(int col = 0; col < world.length; col++){
+                states[row][col] = getState(world, row, col, threshold);
+            }
+        }
+
+        return states;
+    }
+
+    private State getState(Actor[][] world, int row, int col, double threshold) {
+        if (world[row][col] == Actor.NONE) {
+            return State.NA;
+        } else {
+
+            double[] arr = getNeighbours(world, row, col);
+            double neighbours = arr[0];
+            double places = arr[1];
+
+            if (neighbours / places >= threshold) {
+                System.out.println("Nöjd: " + row + ", " + col);
+                return State.SATISFIED;
+            } else {
+                System.out.println("Missnöjd: " + row + ", " + col);
+                return State.UNSATISFIED;
+            }
+
+        }
+
+    }
+
+    double[] getNeighbours(Actor[][] world, int row, int col) {
+
+        double neighbours = - 1; // We will count our selves as a neighbour;
+        double places = - 1; // We will count our selves as a place
+        Actor self = world[row][col];
+
+        for (int r = row - 1; r <= row + 1; r++) {
+            if (0 <= r && r <= world.length -1) {
+                for (int c = col - 1; c <= col + 1; c++) {
+                    if (0 <= c && c <= world.length - 1) {
+                        if (world[r][c] != Actor.NONE) {
+                            places++;
+                            if (world[r][c] == self) {
+                                neighbours++;
+                            }
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+        double[] arr = {neighbours, places};
+
+        return arr;
+
+
+
+
     }
 
     <T> void shuffle(T[] array) {
@@ -288,7 +330,7 @@ public class Neighbours extends Application {
     double width = 400;   // Size for window
     double height = 400;
     long previousTime = nanoTime();
-    final long interval = 450000000;
+    final long interval = 450000000/30;
     double dotSize;
     final double margin = 50;
 
