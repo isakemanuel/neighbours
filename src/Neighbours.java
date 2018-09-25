@@ -330,7 +330,7 @@ public class Neighbours extends Application {
     double width = 400;   // Size for window
     double height = 400;
     long previousTime = nanoTime();
-    final long interval = 450000000/30;
+    final long interval = 450000000;
     double dotSize;
     final double margin = 50;
 
